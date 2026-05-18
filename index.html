@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slide Organizer Lesson</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Top HUD -->
+    <header class="w-full max-w-5xl mx-auto p-4 flex justify-between items-center relative z-10">
+        <div class="flex-1 mr-4 flex items-center gap-4">
+            <div class="text-3xl">🦉</div>
+            <div class="h-6 flex-1 bg-white rounded-full overflow-hidden border-4 border-slate-200 shadow-inner relative">
+                <div id="progress-bar" class="h-full bg-blue-500 w-0 transition-all duration-700 ease-out"></div>
+            </div>
+        </div>
+        <div class="bg-yellow-400 text-yellow-900 px-6 py-2 rounded-2xl font-black text-2xl shadow-md border-b-4 border-yellow-600 flex items-center gap-2">
+            <span>⭐</span> <span id="xp-counter">0</span>
+        </div>
+    </header>
+
+    <div id="toast-container"></div>
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Main Content -->
+    <main class="flex-1 w-full max-w-4xl mx-auto p-4 flex flex-col justify-center relative pb-20">
+
+        <!-- SECTION 1: Mood -->
+        <div id="s1-mood" class="screen active flex-col items-center text-center">
+            <div class="animate-float mb-4 text-8xl">👋</div>
+            <h1 class="text-4xl md:text-6xl font-black text-slate-800 mb-4">Hello there!</h1>
+            <p class="text-2xl text-slate-600 mb-8 font-bold">How are you feeling today?</p>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-2xl">
+                <button onclick="handleMood('Excited', 'Awesome! Keep that energy up! 🚀')" class="bg-white p-6 rounded-3xl shadow-md border-b-4 border-slate-200 hover:border-blue-400 hover:bg-blue-50 active:translate-y-1 active:border-b-0 transition-all text-2xl flex flex-col items-center gap-2 font-bold text-slate-700">
+                    <span class="text-6xl mb-2">🤩</span> Excited
+                </button>
+                <button onclick="handleMood('Tired', 'Feeling sleepy? Let\'s wake your brain up with a game! ⚡')" class="bg-white p-6 rounded-3xl shadow-md border-b-4 border-slate-200 hover:border-blue-400 hover:bg-blue-50 active:translate-y-1 active:border-b-0 transition-all text-2xl flex flex-col items-center gap-2 font-bold text-slate-700">
+                    <span class="text-6xl mb-2">😴</span> Tired
+                </button>
+                <button onclick="handleMood('Bored', 'Boredom is banished here! Time to play! 🎮')" class="bg-white p-6 rounded-3xl shadow-md border-b-4 border-slate-200 hover:border-blue-400 hover:bg-blue-50 active:translate-y-1 active:border-b-0 transition-all text-2xl flex flex-col items-center gap-2 font-bold text-slate-700">
+                    <span class="text-6xl mb-2">😒</span> Bored
+                </button>
+                <button onclick="handleMood('Curious', 'Curiosity is your best tool! Let\'s explore! 🔍')" class="bg-white p-6 rounded-3xl shadow-md border-b-4 border-slate-200 hover:border-blue-400 hover:bg-blue-50 active:translate-y-1 active:border-b-0 transition-all text-2xl flex flex-col items-center gap-2 font-bold text-slate-700">
+                    <span class="text-6xl mb-2">🤔</span> Curious
+                </button>
+                <button onclick="handleMood('Happy', 'Glad to hear it! Let\'s make today a great day! ✨')" class="bg-white p-6 rounded-3xl shadow-md border-b-4 border-slate-200 hover:border-blue-400 hover:bg-blue-50 active:translate-y-1 active:border-b-0 transition-all text-2xl flex flex-col items-center gap-2 font-bold text-slate-700">
+                    <span class="text-6xl mb-2">😊</span> Happy
+                </button>
+                <button onclick="handleMood('Confused', 'No problem! Today we will learn step by step! 💡')" class="bg-white p-6 rounded-3xl shadow-md border-b-4 border-slate-200 hover:border-blue-400 hover:bg-blue-50 active:translate-y-1 active:border-b-0 transition-all text-2xl flex flex-col items-center gap-2 font-bold text-slate-700">
+                    <span class="text-6xl mb-2">😵</span> Confused
+                </button>
+            </div>
+
+            <!-- Mascot Modal -->
+            <div id="mood-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div class="bg-white rounded-3xl p-8 max-w-lg w-full flex flex-col items-center text-center animate-pop shadow-2xl">
+                    <div class="text-8xl mb-6">🦉</div>
+                    <h2 class="text-3xl font-black text-slate-800 mb-4" id="mood-title"></h2>
+                    <p class="text-xl font-bold text-slate-600 mb-8" id="mood-msg"></p>
+                    <button onclick="nextScreen('s2-hook')" class="btn-game btn-primary text-2xl px-12 py-4 w-full">Let's Go! ➔</button>
+                </div>
+            </div>
+
+            <!-- Breathing Exercise Modal -->
+            <div id="breathing-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] flex flex-col items-center justify-center p-4 transition-opacity duration-500">
+                <h2 class="text-4xl font-black text-white mb-16 text-center shadow-sm">Let's get focused!</h2>
+                <div class="relative w-64 h-64 flex items-center justify-center mb-12">
+                    <div id="breathe-circle" class="absolute w-full h-full bg-blue-400 rounded-full opacity-50 transition-all duration-[3000ms] ease-in-out scale-50"></div>
+                    <div id="breathe-text" class="relative z-10 text-3xl font-black text-white drop-shadow-md">Ready...</div>
+                </div>
+            </div>
+
+            <!-- Bubble Pop Modal -->
+            <div id="bubble-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] flex flex-col items-center justify-center p-4 overflow-hidden transition-opacity duration-500">
+                <h2 class="text-4xl font-black text-white mb-2 z-10 text-center drop-shadow-md">Wake up your brain!</h2>
+                <p class="text-xl font-bold text-slate-200 mb-8 z-10 text-center drop-shadow-sm">Pop 5 bubbles to continue</p>
+                <div id="bubble-container" class="absolute inset-0 z-0 pointer-events-none"></div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: Story Hook -->
+        <div id="s2-hook" class="screen flex-col items-center w-full">
+            <div class="flex items-end gap-4 w-full max-w-2xl mx-auto mb-8">
+                <div class="text-7xl animate-float">🦉</div>
+                <div class="speech-bubble flex-1 text-2xl font-bold text-slate-700">
+                    Presentations are like stories. The <span class="text-blue-600">ORDER</span> of the slides matters!
+                </div>
+            </div>
+
+            <div class="bg-slate-800 p-8 rounded-3xl shadow-xl border-4 border-slate-900 w-full text-center relative overflow-hidden min-h-[400px] flex flex-col justify-center">
+                <!-- SVG Projector Stage -->
+                <svg viewBox="0 0 800 400" class="w-full max-w-3xl mx-auto h-auto drop-shadow-2xl">
+                    <rect width="800" height="400" fill="#1e293b"/>
+                    <rect x="150" y="30" width="500" height="250" fill="white" stroke="#cbd5e1" stroke-width="8" rx="8"/>
+                    
+                    <svg x="154" y="34" width="492" height="242">
+                        <g id="svg-slide-content">
+                            <!-- Initial messy slide visible -->
+                            <rect width="100%" height="100%" fill="#fef08a"/>
+                            <text x="246" y="121" font-family="Nunito" font-size="80" text-anchor="middle" dominant-baseline="middle">💩🐶💩</text>
+                            <text x="246" y="190" font-family="Nunito" font-size="24" font-weight="800" text-anchor="middle">Muddy Dog</text>
+                        </g>
+                    </svg>
+
+                    <text x="70" y="280" font-size="60" class="animate-float">🦉</text>
+                    <path d="M 120 250 L 160 210" stroke="#fef08a" stroke-width="4" stroke-linecap="round"/>
+
+                    <path d="M 200 400 C 200 350 250 350 250 400 Z" fill="#0f172a"/>
+                    <path d="M 300 400 C 300 330 360 330 360 400 Z" fill="#0f172a"/>
+                    <path d="M 420 400 C 420 340 480 340 480 400 Z" fill="#0f172a"/>
+                    <path d="M 550 400 C 550 360 600 360 600 400 Z" fill="#0f172a"/>
+
+                    <g id="svg-reactions-confused" class="animate-bounce">
+                        <text x="225" y="320" font-family="Nunito" font-size="40" font-weight="900" fill="#ef4444">?</text>
+                        <text x="330" y="300" font-family="Nunito" font-size="50" font-weight="900" fill="#ef4444">?</text>
+                        <text x="450" y="310" font-family="Nunito" font-size="40" font-weight="900" fill="#ef4444">?</text>
+                    </g>
+                    
+                    <g id="svg-reactions-happy" class="hidden">
+                        <text x="225" y="320" font-family="Nunito" font-size="40" font-weight="900" fill="#fcd34d">⭐</text>
+                        <text x="330" y="300" font-family="Nunito" font-size="50" font-weight="900" fill="#fca5a5">❤️</text>
+                        <text x="450" y="310" font-family="Nunito" font-size="40" font-weight="900" fill="#fcd34d">⭐</text>
+                    </g>
+                </svg>
+
+                <p id="hook-desc" class="text-xl font-bold text-slate-300 mb-6 mt-4">The story is out of order! Clean -> Muddy -> Bath? The audience is confused!</p>
+
+                <button onclick="fixHookAnimation()" id="btn-fix-hook" class="btn-game btn-secondary text-xl px-8 py-4 mx-auto w-max">
+                    ✨ Fix the Story Order ✨
+                </button>
+                
+                <button onclick="nextScreen('s2b-lesson')" id="btn-hook-next" class="hidden btn-game btn-success text-xl px-8 py-4 mx-auto w-max animate-pop mt-2">
+                    Learn the Secret ➔
+                </button>
+            </div>
+        </div>
+
+        <!-- SECTION 2b: Hamburger Lesson -->
+        <div id="s2b-lesson" class="screen flex-col items-center w-full max-w-4xl mx-auto">
+            <h2 class="text-4xl font-black text-slate-800 mb-6 text-center">The Hamburger Rule 🍔</h2>
+            <p class="text-xl text-slate-600 font-bold mb-8 text-center max-w-2xl">
+                A great presentation is like a delicious hamburger. It has three important parts that must go in order!
+            </p>
+
+            <div class="flex flex-col gap-6 w-full max-w-2xl mb-12">
+                <!-- Top Bun -->
+                <div class="bg-orange-100 border-4 border-orange-300 rounded-t-[3rem] rounded-b-xl p-6 flex items-center gap-6 shadow-md transform transition hover:scale-105">
+                    <div class="text-6xl">🍞</div>
+                    <div>
+                        <h3 class="text-2xl font-black text-orange-900 mb-1">1. The Beginning</h3>
+                        <p class="text-lg text-orange-800 font-bold">The Top Bun. The Title Slide and the Introduction. Tell them what you are going to talk about!</p>
+                    </div>
+                </div>
+
+                <!-- Meat/Veggies -->
+                <div class="bg-green-100 border-4 border-green-400 rounded-xl p-6 flex items-center gap-6 shadow-md transform transition hover:scale-105">
+                    <div class="text-6xl">🥬</div>
+                    <div>
+                        <h3 class="text-2xl font-black text-green-900 mb-1">2. The Middle</h3>
+                        <p class="text-lg text-green-800 font-bold">The Meat & Veggies. The main details, steps, or story in a logical order.</p>
+                    </div>
+                </div>
+
+                <!-- Bottom Bun -->
+                <div class="bg-orange-100 border-4 border-orange-300 rounded-b-[3rem] rounded-t-xl p-6 flex items-center gap-6 shadow-md transform transition hover:scale-105">
+                    <div class="text-6xl">🍞</div>
+                    <div>
+                        <h3 class="text-2xl font-black text-orange-900 mb-1">3. The End</h3>
+                        <p class="text-lg text-orange-800 font-bold">The Bottom Bun. The Conclusion or "Thank You" slide. Wrap it up neatly!</p>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="nextScreen('s3-guided')" class="btn-game btn-primary text-2xl px-12 py-4 w-max shadow-xl animate-pop mx-auto">
+                Got it! Let's Practice ➔
+            </button>
+        </div>
+
+        <!-- SECTION 3: Guided Interaction (Fill-in-the-Blank) -->
+        <div id="s3-guided" class="screen flex-col items-center w-full max-w-3xl mx-auto">
+            <h2 class="text-4xl font-black text-slate-800 mb-2">Build the Burger 🍔</h2>
+            <p class="text-xl text-slate-600 font-bold mb-8 text-center">Drag the missing piece into the presentation!</p>
+
+            <div class="w-full flex flex-col items-center gap-6 relative z-10 bg-white p-8 rounded-3xl shadow-lg border-4 border-blue-100" id="guided-container">
+                
+                <!-- The Presentation Layout -->
+                <div class="w-full max-w-md flex flex-col gap-4">
+                    <div class="bg-slate-50 border-2 border-slate-300 p-4 rounded-xl font-bold text-slate-700 text-center shadow-sm">
+                        1. Title & Intro (Top Bun)
+                    </div>
+                    
+                    <!-- Drop Zone -->
+                    <div id="guided-dropzone" class="border-4 border-dashed border-blue-300 bg-blue-50 p-6 rounded-xl font-black text-blue-400 text-center uppercase tracking-widest min-h-[80px] flex items-center justify-center transition-colors">
+                        Drop Missing Slide Here
+                    </div>
+
+                    <div class="bg-slate-50 border-2 border-slate-300 p-4 rounded-xl font-bold text-slate-700 text-center shadow-sm">
+                        3. Conclusion (Bottom Bun)
+                    </div>
+                </div>
+
+                <hr class="w-full border-slate-200 border-2 rounded">
+
+                <!-- Draggable Options -->
+                <div class="flex flex-wrap justify-center gap-4 w-full" id="guided-options">
+                    <div draggable="true" id="guided-opt-wrong" class="bg-red-50 hover:bg-red-100 border-2 border-red-300 text-red-800 font-bold px-6 py-4 rounded-xl cursor-grab active:cursor-grabbing transition-colors shadow-sm">
+                        Another Title Slide
+                    </div>
+                    <div draggable="true" id="guided-opt-correct" class="bg-green-50 hover:bg-green-100 border-2 border-green-400 text-green-900 font-bold px-6 py-4 rounded-xl cursor-grab active:cursor-grabbing transition-colors shadow-sm">
+                        The Details & Story (Meat)
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="guided-feedback" class="mt-6 p-4 rounded-2xl bg-blue-50 border-2 border-blue-200 text-blue-800 font-bold text-center text-lg hidden animate-pop w-full max-w-md"></div>
+
+            <button onclick="nextScreen('s4-challenge')" id="btn-start-game" class="hidden mt-8 btn-game btn-primary text-2xl px-12 py-4 shadow-xl animate-pop w-full max-w-md">
+                Start the Real Game 🎮
+            </button>
+        </div>
+
+        <!-- SECTION 4: Main Challenge (Fix the Presentation) -->
+        <div id="s4-challenge" class="screen flex-col w-full max-w-5xl mx-auto h-[80vh] bg-[#f3f2f1] rounded-xl overflow-hidden shadow-2xl border border-slate-300">
+            <!-- Ribbon Toolbar -->
+            <div class="bg-white border-b border-slate-300 shadow-sm flex flex-col shrink-0">
+                <div class="flex items-center gap-4 px-4 py-1 text-xs text-slate-600 border-b border-slate-200 bg-[#d74c2f] text-white">
+                    <span class="font-bold">Slide Organizer Presentation</span>
+                    <span class="bg-[#b33e25] px-2 rounded-full">Autosave On</span>
+                </div>
+                <div class="flex gap-4 px-4 pt-2 text-sm text-slate-700 font-bold bg-white">
+                    <div class="pb-2 border-b-4 border-[#d74c2f] text-[#d74c2f]">Home</div>
+                    <div class="pb-2 hover:text-slate-900 cursor-pointer text-slate-500 transition-colors">Insert</div>
+                    <div class="pb-2 hover:text-slate-900 cursor-pointer text-slate-500 transition-colors">Design</div>
+                    <div class="pb-2 hover:text-slate-900 cursor-pointer text-slate-500 transition-colors">Transitions</div>
+                </div>
+                <div class="flex items-center gap-6 px-4 py-2 bg-[#f3f2f1] border-b border-slate-300 text-slate-600 text-xs shadow-inner">
+                    <div class="flex items-center gap-1 cursor-pointer hover:bg-slate-200 p-1 rounded transition-colors"><span class="text-xl">📋</span> Paste</div>
+                    <div class="w-px h-8 bg-slate-300"></div>
+                    <div class="flex items-center gap-1 cursor-pointer hover:bg-slate-200 p-1 rounded transition-colors"><span class="text-xl">✨</span> New Slide</div>
+                    <div class="flex-1"></div>
+                    <button onclick="checkChallengeOrder()" class="bg-[#d74c2f] text-white px-6 py-2 rounded hover:bg-[#b33e25] font-bold flex items-center gap-2 shadow-sm transition-colors text-sm">
+                        <span>✔️</span> Check Order
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Workspace -->
+            <div class="flex flex-1 overflow-hidden relative">
+                <!-- Left Thumbnail Panel -->
+                <div class="w-40 md:w-56 bg-[#f3f2f1] border-r border-slate-300 overflow-y-auto py-4 flex flex-col items-center" id="ppt-thumbnails">
+                    <!-- Thumbnails injected via JS -->
+                </div>
+                
+                <!-- Large Active Slide Workspace -->
+                <div class="flex-1 bg-[#e1dfdd] p-4 md:p-8 flex flex-col items-center justify-center relative overflow-hidden shadow-inner">
+                    <!-- Active slide preview -->
+                    <div class="bg-white shadow-2xl border border-slate-200 w-full max-w-3xl aspect-[16/9] flex flex-col items-center justify-center p-8 text-center transition-all duration-300" id="ppt-active-slide">
+                        <h2 class="text-2xl md:text-5xl font-black text-slate-800" id="ppt-active-text">Select a slide</h2>
+                    </div>
+                    
+                    <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-4 py-2 rounded-lg shadow border border-slate-200">
+                        <h3 class="font-black text-slate-800" id="ppt-round-title">Round 1</h3>
+                        <p class="text-sm text-[#d74c2f] font-bold" id="ppt-round-topic">Topic</p>
+                    </div>
+                    <button onclick="showHint()" class="absolute bottom-4 right-4 bg-white hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg shadow border border-slate-200 text-sm font-bold transition-colors">
+                        💡 Hint
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: Feedback + XP (Between Rounds) -->
+        <div id="s5-feedback" class="screen flex-col items-center justify-center w-full min-h-[50vh]">
+            <div class="text-9xl mb-6 animate-pop" id="feedback-icon" style="animation-delay: 0.1s; opacity: 0;">🌟</div>
+            <h1 class="text-5xl font-black text-green-600 mb-4 animate-pop" id="feedback-title" style="animation-delay: 0.2s; opacity: 0;">Great Job!</h1>
+            
+            <div class="bg-white p-8 rounded-3xl shadow-2xl border-4 border-yellow-400 text-center animate-pop w-full max-w-md mx-auto mb-8" style="animation-delay: 0.4s; opacity: 0;">
+                <h3 class="text-slate-500 font-black uppercase tracking-widest mb-2">Round Complete</h3>
+                <div class="text-3xl font-black text-slate-800 mb-4">
+                    <span class="text-yellow-500">★</span>
+                    <span class="text-yellow-500">★</span>
+                    <span class="text-yellow-500">★</span>
+                </div>
+                <div class="bg-green-100 text-green-800 font-black text-2xl py-2 px-6 rounded-full inline-block mb-4 shadow-inner">
+                    +200 XP
+                </div>
+                <p class="text-lg font-bold text-slate-600 bg-slate-50 p-4 rounded-xl border border-slate-200" id="feedback-tip">
+                    Tip: A good presentation always has a clear beginning, middle, and end!
+                </p>
+            </div>
+
+            <button onclick="advanceGame()" class="btn-game btn-primary text-2xl px-12 py-5 animate-pop shadow-xl" style="animation-delay: 0.6s; opacity: 0;">
+                Continue ➔
+            </button>
+        </div>
+
+        <!-- SECTION 6: Teamwork Activity -->
+        <div id="s6-teamwork" class="screen flex-col items-center w-full max-w-4xl mx-auto">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="text-6xl animate-float">🤝</div>
+                <h2 class="text-4xl font-black text-slate-800">Partner Challenge</h2>
+            </div>
+            
+            <div class="bg-white p-6 rounded-3xl shadow-md border-4 border-purple-200 w-full text-center mb-8">
+                <p class="font-bold text-purple-900 text-xl mb-2">Find a partner and discuss!</p>
+                <p class="text-slate-600 font-bold">Look at the two slide outlines below. Which one has a better logical order?</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 w-full mb-8">
+                <!-- Option A -->
+                <div class="bg-white p-6 rounded-3xl shadow-lg border-4 border-slate-200 hover:border-blue-400 transition-colors cursor-pointer flex flex-col" onclick="selectTeamwork('A', this)">
+                    <h3 class="text-center font-black text-2xl text-slate-700 mb-4">Design A</h3>
+                    <div class="bg-slate-50 flex-1 p-4 rounded-2xl flex flex-col gap-2 border border-slate-200">
+                        <div class="bg-white p-3 rounded-xl border-l-4 border-blue-400 font-bold text-slate-700 shadow-sm">1. Our Solution</div>
+                        <div class="bg-white p-3 rounded-xl border-l-4 border-blue-400 font-bold text-slate-700 shadow-sm">2. Title Slide</div>
+                        <div class="bg-white p-3 rounded-xl border-l-4 border-blue-400 font-bold text-slate-700 shadow-sm">3. Thank You</div>
+                        <div class="bg-white p-3 rounded-xl border-l-4 border-blue-400 font-bold text-slate-700 shadow-sm">4. The Problem</div>
+                    </div>
+                    <button class="btn-game bg-slate-200 text-slate-700 mt-6 w-full py-3">Select A</button>
+                </div>
+
+                <!-- Option B -->
+                <div class="bg-white p-6 rounded-3xl shadow-lg border-4 border-slate-200 hover:border-blue-400 transition-colors cursor-pointer flex flex-col" onclick="selectTeamwork('B', this)">
+                    <h3 class="text-center font-black text-2xl text-slate-700 mb-4">Design B</h3>
+                    <div class="bg-slate-50 flex-1 p-4 rounded-2xl flex flex-col gap-2 border border-slate-200">
+                        <div class="bg-white p-3 rounded-xl border-l-4 border-blue-400 font-bold text-slate-700 shadow-sm">1. Title Slide</div>
+                        <div class="bg-white p-3 rounded-xl border-l-4 border-blue-400 font-bold text-slate-700 shadow-sm">2. The Problem</div>
+                        <div class="bg-white p-3 rounded-xl border-l-4 border-blue-400 font-bold text-slate-700 shadow-sm">3. Our Solution</div>
+                        <div class="bg-white p-3 rounded-xl border-l-4 border-blue-400 font-bold text-slate-700 shadow-sm">4. Thank You</div>
+                    </div>
+                    <button class="btn-game bg-slate-200 text-slate-700 mt-6 w-full py-3">Select B</button>
+                </div>
+            </div>
+
+            <div id="teamwork-result" class="w-full text-center hidden animate-pop">
+                <div class="bg-green-100 border-4 border-green-500 text-green-900 p-6 rounded-3xl text-2xl font-black mb-6 shadow-md">
+                    Correct! Design B tells a logical story: Beginning, Middle, and End.
+                </div>
+                <button onclick="nextScreen('s7-reflection')" class="btn-game btn-primary text-2xl px-12 py-5 shadow-xl">
+                    Final Quiz ➔
+                </button>
+            </div>
+        </div>
+
+        <!-- SECTION 7: Reflection -->
+        <div id="s7-reflection" class="screen flex-col items-center w-full max-w-4xl mx-auto">
+            <h2 class="text-4xl font-black text-slate-800 mb-2">Final Exam 🧠</h2>
+            <p class="text-xl text-slate-600 font-bold mb-8">Drag the correct answer to the Drop Zone.</p>
+
+            <!-- Quiz Container -->
+            <div id="quiz-container" class="w-full bg-white p-8 rounded-3xl shadow-xl border-4 border-slate-200 text-left mb-8 relative overflow-hidden">
+                
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-black text-blue-900" id="quiz-question">Question 1/10</h3>
+                    <div class="text-slate-500 font-bold" id="quiz-progress-text">0/10</div>
+                </div>
+                
+                <h4 class="text-xl text-slate-700 font-bold mb-8" id="quiz-question-text">Question text goes here</h4>
+                
+                <!-- Interactive Area (Locked out during timer) -->
+                <div class="relative w-full">
+                    <!-- Lockout Overlay -->
+                    <div id="quiz-lockout-overlay" class="absolute -inset-4 bg-white/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center hidden rounded-xl">
+                        <div class="bg-white p-4 rounded-2xl shadow-lg border-2 border-slate-200 flex flex-col items-center">
+                            <div class="text-3xl mb-2">⏱️</div>
+                            <div class="text-slate-600 font-bold mb-2">Please read the question...</div>
+                            <div class="w-48 h-2 bg-slate-200 rounded-full overflow-hidden">
+                                <div id="quiz-timer-bar" class="h-full bg-blue-500 w-0"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Answer Drop Zone -->
+                    <div id="quiz-dropzone" class="w-full max-w-xl mx-auto min-h-[100px] border-4 border-dashed border-slate-300 bg-slate-50 rounded-2xl flex flex-col items-center justify-center p-4 mb-8 transition-colors text-slate-400 font-bold text-xl uppercase tracking-widest relative z-10">
+                        <span id="quiz-dropzone-text">Drop Answer Here</span>
+                    </div>
+
+                    <hr class="border-2 border-slate-100 rounded mb-8">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="quiz-options">
+                        <!-- Options injected here -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="final-celebration" class="hidden text-center animate-pop mt-4 w-full">
+                <div class="text-8xl mb-6">🏆</div>
+                <h3 class="text-5xl font-black text-blue-600 mb-4">Lesson Complete!</h3>
+                <p class="text-2xl font-bold text-slate-700 mb-4">You are a Slide Master!</p>
+                <p id="final-feedback-text" class="text-xl font-medium text-slate-600 max-w-2xl mx-auto mb-8 leading-relaxed"></p>
+                <div class="bg-yellow-100 border-4 border-yellow-400 p-6 rounded-3xl inline-block shadow-lg">
+                    <div class="text-slate-500 font-black uppercase tracking-widest mb-2">Final Score</div>
+                    <div class="text-4xl font-black text-yellow-600">⭐ <span id="final-xp">0</span> XP</div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Load scripts in correct order -->
+    <script src="js/main.js"></script>
+    <script src="js/confetti.js"></script>
+    <script src="js/activities.js"></script>
+    <script src="js/guided.js"></script>
+    <script src="js/challenge.js"></script>
+    <script src="js/quiz.js"></script>
+</body>
+</html>
