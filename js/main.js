@@ -76,7 +76,7 @@ function showToast(msg, type = 'normal') {
     }, 3000);
 }
 
-const screenSequence = ['s1-mood', 's2-hook', 's2b-lesson', 's3-guided', 's4-challenge', 's6-teamwork', 's7-reflection'];
+const screenSequence = ['s1-mood', 's2-hook', 's2b-lesson', 's2c-frameworks', 's3-guided', 's4-challenge', 's6-teamwork', 's7-reflection'];
 
 function nextScreen(screenId) {
     sounds.bloop();
