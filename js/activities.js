@@ -113,33 +113,57 @@ function fixHookAnimation() {
     if(hookFixed) return;
     sounds.success();
     
-    // Hide confused reactions, show happy reactions
-    document.getElementById('svg-reactions-confused').classList.add('hidden');
-    document.getElementById('svg-reactions-happy').classList.remove('hidden');
-    document.getElementById('svg-reactions-happy').classList.add('animate-pop');
-
-    // Simulate sorting the slides quickly with a visual flicker
-    const contentGroup = document.getElementById('svg-slide-content');
-    contentGroup.classList.add('opacity-50');
+    const btnFix = document.getElementById('btn-fix-hook');
+    const btnNext = document.getElementById('btn-hook-next');
+    
+    btnFix.classList.add('hidden');
+    
+    const card1 = document.getElementById('hook-card-1');
+    const card2 = document.getElementById('hook-card-2');
+    
+    // Fade out and shrink for animation
+    card1.classList.add('opacity-0', 'scale-90');
+    card2.classList.add('opacity-0', 'scale-90');
     
     setTimeout(() => {
-        // Change text/visuals to the Correct Order: Muddy -> Bath -> Clean
-        contentGroup.innerHTML = `
-            <rect width="100%" height="100%" fill="#bfdbfe"/>
-            <text x="246" y="121" font-family="Nunito" font-size="80" text-anchor="middle" dominant-baseline="middle">🐶✨</text>
-            <text x="246" y="190" font-family="Nunito" font-size="24" font-weight="800" text-anchor="middle">Clean Dog!</text>
-        `;
-        contentGroup.classList.remove('opacity-50');
+        // Swap contents
+        // card1 becomes Mud
+        card1.querySelector('img').src = 'assets/img/dog_mud.png';
+        card1.querySelector('p').innerHTML = 'The dog jumps<br>in the mud!';
         
+        // card2 becomes Bath
+        card2.querySelector('img').src = 'assets/img/dog_bath.png';
+        card2.querySelector('p').innerHTML = 'The dog is<br>taking a bath.';
+        
+        // Restore visibility
+        card1.classList.remove('opacity-0', 'scale-90');
+        card2.classList.remove('opacity-0', 'scale-90');
+        
+        // Update Warning
+        const warning = document.getElementById('hook-warning');
+        warning.innerHTML = '✅ The presentation is FIXED!';
+        warning.classList.replace('text-yellow-400', 'text-green-400');
+        
+        // Update Audience Speech Bubbles
+        const speeches = document.querySelectorAll('.hook-speech');
+        
+        speeches[0].innerText = "Ah!";
+        speeches[0].className = "bg-green-100 rounded-2xl px-4 py-2 font-bold text-green-700 shadow-md mb-2 relative hook-speech text-sm md:text-base";
+        speeches[0].innerHTML += '<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 border-[6px] border-transparent border-t-green-100 hook-speech-tail"></div>';
+
+        speeches[1].innerText = "Now I get it!";
+        speeches[1].className = "bg-green-100 rounded-2xl px-4 py-2 font-bold text-green-700 shadow-md mb-2 relative hook-speech text-sm md:text-base";
+        speeches[1].innerHTML += '<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 border-[6px] border-transparent border-t-green-100 hook-speech-tail"></div>';
+
+        speeches[2].innerText = "Perfect!";
+        speeches[2].className = "bg-green-100 rounded-2xl px-4 py-2 font-bold text-green-700 shadow-md mb-2 relative hook-speech text-sm md:text-base";
+        speeches[2].innerHTML += '<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 border-[6px] border-transparent border-t-green-100 hook-speech-tail"></div>';
+
         // Trigger confetti
         if(typeof triggerConfetti === 'function') triggerConfetti();
+        
+        btnNext.classList.remove('hidden');
     }, 500);
-
-    document.getElementById('hook-desc').innerHTML = "Ah, much better! Muddy -> Bath -> Clean makes sense!";
-    document.getElementById('hook-desc').classList.replace('text-slate-300', 'text-green-400');
-
-    document.getElementById('btn-fix-hook').classList.add('hidden');
-    document.getElementById('btn-hook-next').classList.remove('hidden');
     
     updateXP(100);
     hookFixed = true;

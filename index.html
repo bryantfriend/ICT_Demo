@@ -85,56 +85,84 @@
 
         <!-- SECTION 2: Story Hook -->
         <div id="s2-hook" class="screen flex-col items-center w-full">
-            <div class="flex items-end gap-4 w-full max-w-2xl mx-auto mb-8">
+            <div class="flex items-center gap-4 w-full max-w-3xl mx-auto mb-8">
                 <div class="text-7xl animate-float">🦉</div>
-                <div class="speech-bubble flex-1 text-2xl font-bold text-slate-700">
-                    Presentations are like stories. The <span class="text-blue-600">ORDER</span> of the slides matters!
+                <div class="speech-bubble flex-1 text-2xl font-bold text-slate-700 text-center">
+                    This slideshow is a <span class="text-blue-600 font-black">MESS!</span> 🐶<br>
+                    <span class="text-xl">The story doesn't make any sense. Why is it in this order?</span>
                 </div>
             </div>
 
-            <div class="bg-slate-800 p-8 rounded-3xl shadow-xl border-4 border-slate-900 w-full text-center relative overflow-hidden min-h-[400px] flex flex-col justify-center">
-                <!-- SVG Projector Stage -->
-                <svg viewBox="0 0 800 400" class="w-full max-w-3xl mx-auto h-auto drop-shadow-2xl">
-                    <rect width="800" height="400" fill="#1e293b"/>
-                    <rect x="150" y="30" width="500" height="250" fill="white" stroke="#cbd5e1" stroke-width="8" rx="8"/>
+            <div class="bg-[#1b2234] p-8 md:p-12 rounded-[2rem] shadow-2xl border-4 border-slate-900 w-full text-center relative overflow-hidden flex flex-col justify-between max-w-5xl mx-auto">
+                <div id="hook-warning" class="text-yellow-400 font-black text-2xl md:text-3xl mb-12 flex items-center justify-center gap-2">
+                    ⚠️ This presentation is OUT OF ORDER!
+                </div>
+
+                <!-- Cards Container -->
+                <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8 mb-16 relative" id="hook-cards-container">
                     
-                    <svg x="154" y="34" width="492" height="242">
-                        <g id="svg-slide-content">
-                            <!-- Initial messy slide visible -->
-                            <rect width="100%" height="100%" fill="#fef08a"/>
-                            <text x="246" y="121" font-family="Nunito" font-size="80" text-anchor="middle" dominant-baseline="middle">💩🐶💩</text>
-                            <text x="246" y="190" font-family="Nunito" font-size="24" font-weight="800" text-anchor="middle">Muddy Dog</text>
-                        </g>
-                    </svg>
+                    <!-- Card 1 -->
+                    <div id="hook-card-1" class="relative bg-white rounded-xl w-64 shadow-lg transition-all duration-500 ease-in-out transform flex-shrink-0">
+                        <div class="absolute -top-4 -left-4 w-10 h-10 bg-purple-500 rounded-full text-white font-black text-xl flex items-center justify-center border-4 border-[#1b2234] z-10 shadow-sm badge-num">1</div>
+                        <img src="assets/img/dog_bath.png" class="w-full h-48 object-cover rounded-t-xl" alt="Dog Bath">
+                        <div class="p-4 bg-white rounded-b-xl border-t-2 border-slate-100 h-[88px] flex items-center justify-center">
+                            <p class="font-bold text-slate-800 text-lg leading-tight">The dog is<br>taking a bath.</p>
+                        </div>
+                    </div>
 
-                    <text x="70" y="280" font-size="60" class="animate-float">🦉</text>
-                    <path d="M 120 250 L 160 210" stroke="#fef08a" stroke-width="4" stroke-linecap="round"/>
+                    <div class="text-purple-500 text-4xl font-black arrow-icon rotate-90 md:rotate-0">➔</div>
 
-                    <path d="M 200 400 C 200 350 250 350 250 400 Z" fill="#0f172a"/>
-                    <path d="M 300 400 C 300 330 360 330 360 400 Z" fill="#0f172a"/>
-                    <path d="M 420 400 C 420 340 480 340 480 400 Z" fill="#0f172a"/>
-                    <path d="M 550 400 C 550 360 600 360 600 400 Z" fill="#0f172a"/>
+                    <!-- Card 2 -->
+                    <div id="hook-card-2" class="relative bg-white rounded-xl w-64 shadow-lg transition-all duration-500 ease-in-out transform flex-shrink-0">
+                        <div class="absolute -top-4 -left-4 w-10 h-10 bg-purple-500 rounded-full text-white font-black text-xl flex items-center justify-center border-4 border-[#1b2234] z-10 shadow-sm badge-num">2</div>
+                        <img src="assets/img/dog_mud.png" class="w-full h-48 object-cover rounded-t-xl" alt="Dog Mud">
+                        <div class="p-4 bg-white rounded-b-xl border-t-2 border-slate-100 h-[88px] flex items-center justify-center">
+                            <p class="font-bold text-slate-800 text-lg leading-tight">The dog jumps<br>in the mud!</p>
+                        </div>
+                    </div>
 
-                    <g id="svg-reactions-confused" class="animate-bounce">
-                        <text x="225" y="320" font-family="Nunito" font-size="40" font-weight="900" fill="#ef4444">?</text>
-                        <text x="330" y="300" font-family="Nunito" font-size="50" font-weight="900" fill="#ef4444">?</text>
-                        <text x="450" y="310" font-family="Nunito" font-size="40" font-weight="900" fill="#ef4444">?</text>
-                    </g>
-                    
-                    <g id="svg-reactions-happy" class="hidden">
-                        <text x="225" y="320" font-family="Nunito" font-size="40" font-weight="900" fill="#fcd34d">⭐</text>
-                        <text x="330" y="300" font-family="Nunito" font-size="50" font-weight="900" fill="#fca5a5">❤️</text>
-                        <text x="450" y="310" font-family="Nunito" font-size="40" font-weight="900" fill="#fcd34d">⭐</text>
-                    </g>
-                </svg>
+                    <div class="text-purple-500 text-4xl font-black arrow-icon rotate-90 md:rotate-0">➔</div>
 
-                <p id="hook-desc" class="text-xl font-bold text-slate-300 mb-6 mt-4">The story is out of order! Clean -> Muddy -> Bath? The audience is confused!</p>
+                    <!-- Card 3 -->
+                    <div id="hook-card-3" class="relative bg-white rounded-xl w-64 shadow-lg transition-all duration-500 ease-in-out transform flex-shrink-0">
+                        <div class="absolute -top-4 -left-4 w-10 h-10 bg-purple-500 rounded-full text-white font-black text-xl flex items-center justify-center border-4 border-[#1b2234] z-10 shadow-sm badge-num">3</div>
+                        <img src="assets/img/dog_clean.png" class="w-full h-48 object-cover rounded-t-xl" alt="Dog Clean">
+                        <div class="p-4 bg-white rounded-b-xl border-t-2 border-slate-100 h-[88px] flex items-center justify-center">
+                            <p class="font-bold text-slate-800 text-lg leading-tight">Now the dog<br>is clean!</p>
+                        </div>
+                    </div>
+                </div>
 
-                <button onclick="fixHookAnimation()" id="btn-fix-hook" class="btn-game btn-secondary text-xl px-8 py-4 mx-auto w-max">
-                    ✨ Fix the Story Order ✨
+                <!-- Audience Reactions -->
+                <div class="flex items-end justify-center gap-6 md:gap-12 mb-10" id="hook-audience">
+                    <div class="relative flex flex-col items-center animate-bounce" style="animation-delay: 0s;">
+                        <div class="bg-white rounded-2xl px-4 py-2 font-bold text-red-500 shadow-md mb-2 relative hook-speech text-sm md:text-base">
+                            Huh?
+                            <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 border-[6px] border-transparent border-t-white hook-speech-tail"></div>
+                        </div>
+                        <div class="w-12 h-12 md:w-16 md:h-16 bg-slate-900 rounded-full opacity-40 flex items-center justify-center text-2xl md:text-3xl">👤</div>
+                    </div>
+                    <div class="relative flex flex-col items-center animate-bounce" style="animation-delay: 0.2s;">
+                        <div class="bg-white rounded-2xl px-4 py-2 font-bold text-purple-600 shadow-md mb-2 relative hook-speech text-sm md:text-base">
+                            What?!
+                            <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 border-[6px] border-transparent border-t-white hook-speech-tail"></div>
+                        </div>
+                        <div class="w-12 h-12 md:w-16 md:h-16 bg-slate-900 rounded-full opacity-40 flex items-center justify-center text-2xl md:text-3xl">👤</div>
+                    </div>
+                    <div class="relative flex flex-col items-center animate-bounce" style="animation-delay: 0.4s;">
+                        <div class="bg-white rounded-2xl px-4 py-2 font-bold text-blue-500 shadow-md mb-2 relative hook-speech text-sm md:text-base text-center">
+                            This makes<br>no sense!
+                            <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 border-[6px] border-transparent border-t-white hook-speech-tail"></div>
+                        </div>
+                        <div class="w-12 h-12 md:w-16 md:h-16 bg-slate-900 rounded-full opacity-40 flex items-center justify-center text-2xl md:text-3xl">👤</div>
+                    </div>
+                </div>
+
+                <button onclick="fixHookAnimation()" id="btn-fix-hook" class="btn-game btn-secondary text-xl md:text-2xl px-8 md:px-12 py-4 mx-auto w-max tracking-widest shadow-xl uppercase">
+                    ✨ Let's Fix the Order! ✨
                 </button>
                 
-                <button onclick="nextScreen('s2b-lesson')" id="btn-hook-next" class="hidden btn-game btn-success text-xl px-8 py-4 mx-auto w-max animate-pop mt-2">
+                <button onclick="nextScreen('s2b-lesson')" id="btn-hook-next" class="hidden btn-game btn-success text-xl md:text-2xl px-8 md:px-12 py-4 mx-auto w-max animate-pop mt-2 tracking-widest uppercase">
                     Learn the Secret ➔
                 </button>
             </div>
